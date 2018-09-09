@@ -1,4 +1,5 @@
 function requestDog(callback){
+    document.getElementById('dog-get').disabled = true;
     if (document.getElementById('play')) {
         document.getElementById('play').remove();
     }
@@ -33,6 +34,7 @@ function handleData(data) {
             document.getElementById('spinner').style.display = 'none';
             container.appendChild(video);
             document.getElementById('controls').appendChild(button);
+            document.getElementById('dog-get').disabled = false;
         })
     }
     else {
@@ -42,6 +44,7 @@ function handleData(data) {
         photo.addEventListener('load', function() {
             document.getElementById('spinner').style.display = 'none';
             container.appendChild(photo);
+            document.getElementById('dog-get').disabled = false;
         })
     }
 }
