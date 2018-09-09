@@ -25,7 +25,7 @@ function handleData(data) {
             video.loop = true;
         })
         container.appendChild(video);
-        container.appendChild(button);
+        document.getElementById('controls').appendChild(button);
     }
     else {
         var photo = document.createElement('img');

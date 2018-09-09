@@ -12,7 +12,7 @@ button {
     background-color: #080164;
     border: 1px solid white;
     color: white;
-    display: block;
+    display: inline-block;
     margin: 16px auto;
 }
 
@@ -30,15 +30,9 @@ img, video {
     margin: auto;
 }
 
-@keyframes spin {
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-#spinner {
-    visibility: hidden;
-    animation: spin 1s infinite ease-in-out;
+#controls {
+    display: flex;
+    justify-content: space-around;
 }
 
 #container {
