@@ -19,6 +19,7 @@ function handleData(data) {
         video.src = parsedData.url;
         var button = document.createElement('button');
         button.textContent = 'Play';
+        button.id = 'play'
         button.addEventListener('click', function playVideo() {
             button.style.display = 'none';
             video.play();
@@ -28,6 +29,9 @@ function handleData(data) {
         document.getElementById('controls').appendChild(button);
     }
     else {
+        if (document.getElementById('play')) {
+            document.getElementById('play').remove();
+        }
         var photo = document.createElement('img');
         photo.src = parsedData.url;
         photo.alt = 'dog photo';
