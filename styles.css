@@ -35,7 +35,7 @@ img, video {
 }
 
 #controls {
-    width: 100px;
+    height: 120px;
     align-self: stretch;
     display: flex;
     justify-content: space-around;
