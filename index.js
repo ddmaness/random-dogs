@@ -1,4 +1,8 @@
 function requestDog(callback){
+    if (document.getElementById('play')) {
+        document.getElementById('play').remove();
+    }
+    document.getElementById('spinner').style.display = 'block';
     document.getElementById('container').innerHTML = '';
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -25,17 +29,20 @@ function handleData(data) {
             video.play();
             video.loop = true;
         })
-        container.appendChild(video);
-        document.getElementById('controls').appendChild(button);
+        video.addEventListener('canplay', function() {
+            document.getElementById('spinner').style.display = 'none';
+            container.appendChild(video);
+            document.getElementById('controls').appendChild(button);
+        })
     }
     else {
-        if (document.getElementById('play')) {
-            document.getElementById('play').remove();
-        }
         var photo = document.createElement('img');
         photo.src = parsedData.url;
         photo.alt = 'dog photo';
-        container.appendChild(photo);
+        photo.addEventListener('load', function() {
+            document.getElementById('spinner').style.display = 'none';
+            container.appendChild(photo);
+        })
     }
 }
 
