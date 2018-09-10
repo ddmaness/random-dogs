@@ -1,54 +1,116 @@
-function requestDog(callback){
-    document.getElementById('dog-get').disabled = true;
-    if (document.getElementById('play')) {
-        document.getElementById('play').remove();
-    }
-    document.getElementById('spinner').style.display = 'block';
-    document.getElementById('container').innerHTML = '';
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        if(this.readyState === 4) {
-            callback(this.responseText);
+(function() {
+
+    // toggle visiblity of play video button
+    function togglePlay() {
+        if (document.getElementById('play')) {
+            document.getElementById('play').remove();
         }
     }
-    xhr.open('GET', 'https://random.dog/woof.json');
-    xhr.send();
-}
 
-function handleData(data) {
-    var parsedData = JSON.parse(data);
-    var container = document.getElementById('container');
-    if(/\.(mp4|webm)$/.test(parsedData.url)) {
+    // disable or enable button to request new dog
+    function toggleGetDisable() {
+        var button = document.getElementById('get-dog-button');
+        button.disabled ? button.disabled = false: button.disabled = true;
+    }
+
+    // clear out display area
+    function clearDisplayArea() {
+        document.getElementById('spinner').style.display = 'block';
+        document.getElementById('container').innerHTML = '';
+    }
+
+    // checks if the url returned from the url represents a video or not
+    function isVideo(data) {
+        if (/\.(mp4|webm)$/.test(data)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    // display video from requested url
+    function displayVideo(data) {
         var video = document.createElement('video');
-        video.id = 'dog-video'
-        video.src = parsedData.url;
+        video.loop = true;
+        video.src = data;
         var button = document.createElement('button');
         button.textContent = 'Play';
         button.id = 'play'
-        button.addEventListener('click', function playVideo() {
+        document.getElementById('spinner').style.display = 'none';
+        container.appendChild(video);
+        document.getElementById('controls').appendChild(button);
+        document.getElementById('get-dog-button').disabled = false;
+        button.addEventListener('click', function() {
             button.style.display = 'none';
             video.play();
-            video.loop = true;
-        })
-        video.addEventListener('canplay', function() {
-            document.getElementById('spinner').style.display = 'none';
-            container.appendChild(video);
-            document.getElementById('controls').appendChild(button);
-            document.getElementById('dog-get').disabled = false;
-        })
+        });
     }
-    else {
+
+    // display photo from requested url
+    function displayPhoto(data) {
         var photo = document.createElement('img');
-        photo.src = parsedData.url;
+        photo.src = data;
         photo.alt = 'dog photo';
         photo.addEventListener('load', function() {
             document.getElementById('spinner').style.display = 'none';
             container.appendChild(photo);
-            document.getElementById('dog-get').disabled = false;
+            document.getElementById('get-dog-button').disabled = false;
         })
     }
-}
 
-document.getElementById('dog-get').addEventListener('click', function(){
-    requestDog(handleData)
-});
+    // reset the page
+    function reset() {
+        toggleGetDisable();
+        togglePlay();
+        clearDisplayArea();
+    }
+
+    // parse data returned by api
+    function parseData(data) {
+        return JSON.parse(data).url;
+    }
+
+    // add event listener to request a new dog to the button element
+    function addRequestToButton() {
+        document.getElementById('get-dog-button').addEventListener('click', function(){
+            requestDog(handleData)
+        });
+    }
+
+    /*
+    ===================================================================================
+
+    Make request and handle response
+
+    ===================================================================================
+    */
+
+
+    // request data from random.dog api
+    function requestDog(callback){
+        reset();
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if(this.readyState === 4) {
+                callback(this.responseText);
+            }
+        }
+        xhr.open('GET', 'https://random.dog/woof.json');
+        xhr.send();
+    }
+
+    // parse and display returned data from random.dog api
+    function handleData(data) {
+        var url = parseData(data);
+        if(isVideo(url)) {
+            displayVideo(url);
+        }
+        else {
+            displayPhoto(url);
+        }
+    }
+
+    addRequestToButton();
+
+})()
